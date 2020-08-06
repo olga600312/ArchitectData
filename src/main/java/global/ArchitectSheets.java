@@ -19,6 +19,7 @@ import domain.HorizontalLocation;
 import domain.LocationType;
 import domain.VerticalLocation;
 
+import java.awt.*;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
@@ -36,7 +37,7 @@ public class ArchitectSheets {
     private static final JsonFactory JSON_FACTORY = JacksonFactory.getDefaultInstance();
     private static final String TOKENS_DIRECTORY_PATH = "tokens";
     private static final String CREDENTIALS_FILE_PATH = "/credentials.json";
-    private static final String SPREAD_SHEET_ID = "1QVdmWszVAv7QuUe-Uv7S2Kj5L8QFCsH37z2dtV6pBTo";
+    private static final String SPREAD_SHEET_ID = "1s1xfOmyuQo2AAb6aC-Idxg-WG5n9_x65gNZI4jDF2H0";//"1QVdmWszVAv7QuUe-Uv7S2Kj5L8QFCsH37z2dtV6pBTo";
     private static final List<String> SCOPES = Collections.singletonList(SheetsScopes.SPREADSHEETS_READONLY);
 
     private static Credential authorise(final NetHttpTransport HTTP_TRANSPORT) throws IOException {
@@ -129,7 +130,7 @@ public class ArchitectSheets {
     private static Collection<VerticalLocation> fetchVerticalLocations() throws GeneralSecurityException, IOException {
         ArrayList<VerticalLocation> arr = new ArrayList<>();
         final NetHttpTransport HTTP_TRANSPORT = GoogleNetHttpTransport.newTrustedTransport();
-        String range = "LocationType!A1:J6";
+        String range = "LocationType!A1:S6";
         Sheets service = new Sheets.Builder(HTTP_TRANSPORT, JSON_FACTORY, authorise(HTTP_TRANSPORT))
                 .setApplicationName(APPLICATION_NAME)
                 .build();
@@ -144,7 +145,8 @@ public class ArchitectSheets {
 
             for (List row : values) {
                 LocationType type = LocationType.valueOf((String) row.get(0));
-                row.stream().skip(1).filter(e -> e != null && !e.toString().trim().isEmpty()).forEach(e -> {
+               // type.setInitColor(new Color(Integer.parseInt(row.get(1).toString(),16)));
+                row.stream().skip(2).filter(e -> e != null && !e.toString().trim().isEmpty()).forEach(e -> {
                     arr.add(VerticalLocation.builder().type(type).name(e.toString()).build());
 
                 });
